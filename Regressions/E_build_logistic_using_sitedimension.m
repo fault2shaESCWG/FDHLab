@@ -11,7 +11,7 @@ kin = 'Reverse';
 %kin = 'Normal';
 %%
 Pname = fullfile('TABLE_outputs',['P_montecarlo_SiteDim',num2str(site_dim),'_SiteDist',num2str(site_distance),'_',char(HWFW),'.txt']);
-P_montecarlo_table = readtable(fullfile('TABLE_outputs',['P_montecarlo_',num2str(site_dim),'.txt']))
+P_montecarlo_table = readtable(Pname)
 P_montecarlo = P_montecarlo_table.Punif;
 %%
 param_logistic = load(fullfile('TABLE_outputs',['parameters_logistic_multisizeC1_',char(kin),'.txt']));
@@ -21,9 +21,9 @@ y = param_logistic(2,i)+ param_logistic(3,i)*m + param_logistic(4,i).*x + param_
 elseif strcmp(HWFW,'FW')==1
 y = param_logistic(2,i)+ param_logistic(3,i)*m + param_logistic(4,i).*x + param_logistic(5,i)*1;
 end  
-
+P =1-  exp(y)./(1+exp(y));
 %%
-condP = y.* P_montecarlo;
+condP = P.* P_montecarlo;
 %%
 output = table(x',condP','VariableNames',{'distance','Logistic'});
 writetable(output,fullfile('TABLE_outputs',['LOGISTIC_Mw',num2str(m),'_SiteDim',num2str(site_dim),'_SiteDist',num2str(site_distance),'_',char(HWFW),'.txt']))
