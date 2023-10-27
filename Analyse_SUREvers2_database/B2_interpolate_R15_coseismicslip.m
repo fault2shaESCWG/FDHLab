@@ -12,10 +12,10 @@ end
 
 R = 1.5;
 maxdiff = 10; % in meters
-dati_point_all = readtable(fullfile('SURE-main','SURE2.0_Slip_Obs-prova_matlab.xlsx'),'format','auto');
+dati_point_all = readtable(fullfile('SURE-main','SURE2.0_Slip_Obs_matlab.xlsx'),'format','auto');
 IdE = unique(dati_point_all.IdE);
     dati_rupture_all = [];
-    dati_rupture_all = shaperead(fullfile('SURE-main','SURE2.0_ruptures','SURE2.0_ruptures-prova.shp'));
+    dati_rupture_all = shaperead(fullfile('SURE-main','SURE2.0_ruptures','SURE2.0_ruptures.shp'));
 
 
 %%
