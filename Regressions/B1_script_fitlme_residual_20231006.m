@@ -5,6 +5,7 @@ clear all
 close all
 
 %%
+
 pathout1 ='../Analyse_SUREvers2_database/TABLE_db_20231026';
 path2 = fullfile('FIGURE','residual');
 
@@ -12,7 +13,7 @@ if isempty(dir(path2))
 mkdir(path2)
 end
 
-pathinputs = '../preparazioneDB/TABLE_db_20231026'
+pathinputs = '../Analyse_SUREvers2_database/TABLE_db_20231026'
 T1=readtable(fullfile(pathinputs,'Reverse_s_distance.txt'));
 T2=readtable(fullfile(pathinputs,'Normal_s_distance.txt'));
 %%
