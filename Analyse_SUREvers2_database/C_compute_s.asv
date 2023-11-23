@@ -188,7 +188,7 @@ end
 disp([dist1,dist2])
 
 if (dist1 <= dist2) | (dist2 > buffer_from_R15) | isnan(dist2)
-    disp('Rank 2 associated to Rank 1')
+    disp('DR associated to ')
 h_dist = find(temp1 == dist1);
 coord_point = [R1_vd_points.lat(h_dist),R1_vd_points.lon(h_dist)];
 VD_PF =  R1_vd_points.Throw(h_dist);   
@@ -208,7 +208,7 @@ out = [out;id, Mw_event, puntiDRsimple.IdO(j),...
         puntiDRsimple.Comp_rank(j),1,puntiDRsimple.T(j),mean(VD_PF),meanVD_PF,...
         dist1,HWFW,kin];
 elseif (dist1 > dist2) & (dist2 <= buffer_from_R15)
-    disp('Rank 2 associated to Rank 1.5')
+    disp('caso2')
  
 h_dist = find(temp2 == dist2);
 coord_point = [R15_vd_points.lat(h_dist),R15_vd_points.lon(h_dist)];
