@@ -6,6 +6,7 @@ close all
 
 %%
 pathin = '../Analyse_SUREvers2_database/TABLE_db_20231026';
+pathin2 = '../Analyse_SUREvers2_database/';
 % output paths
 path2 = fullfile('FIGURE','ratio');
 if isempty(dir(path2))
@@ -17,12 +18,17 @@ site_dim = [10,20,50,100,200,500]
 wstep = 10;
 bufferfault = 5; %metri
 maxdistance = 5000;  
-event_rev  = load('list_Reverse.txt');
-event_nor  = load('list_Normal.txt');
+event_rev  = load(fullfile([pathin2,'list_Reverse.txt']));
+event_nor  = load(fullfile([pathin2,'list_Normal.txt']));
+
 id_all = [event_rev(1:end,:);event_nor(:,:)];
-%%    
-input_data_rdistnorm  = readtable(fullfile('Table_inputs','Normal_r_distance_table.txt')); % input data
-input_data_rdistrev  = readtable(fullfile('Table_inputs','Reverse_r_distance_table.txt')); % input data
+
+%%   
+
+input_data_rdistnorm  = readtable(fullfile(pathin,'Normal_r_distance_table.txt')); % input data
+
+input_data_rdistrev  = readtable(fullfile(pathin,'Reverse_r_distance_table.txt')); % input data
+ 
 R_dist_table = [input_data_rdistnorm;input_data_rdistrev];
 %%
 

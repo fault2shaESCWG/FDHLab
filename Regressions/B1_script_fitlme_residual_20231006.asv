@@ -34,7 +34,7 @@ C4 = find(T.RankDR > 2);% always v rankPF ==1
 T.combination(C1) = 1; 
 T.combination(C2) = 2; 
 T.combination(C3) = 3;
-T.combination(C4) = 3; % in the paper all the pre-existing faults are grouped in the same combination 
+T.combination(C4) = 3; % in the paper we analyze togheter the pre-existing faults without separating  
 
 %%
 T.combination = categorical(T.combination);

@@ -11,6 +11,8 @@ output_i_wstep_BC3 = [];
 %%
 % USER DEFINED INPUTS
 pathin = '../Analyse_SUREvers2_database/TABLE_db_20231026';
+pathin2 = '../Analyse_SUREvers2_database/';
+
 kin = 'Reverse'
 %kin = 'Normal'
 sizes = [10,20,50,100,200,500];
@@ -24,9 +26,11 @@ mkdir(pathout1)
 end
 
 input_data  = readtable(fullfile(pathin,[kin,'_r_distance_table.txt'])); % input data
-event_mw_l  = load(fullfile(['list_',kin,'.txt']));
+event_mw_l  = load(fullfile([pathin2,'list_',kin,'.txt']));
 i_wstep = 0;
 
+%%
+disp(['calculating logistic for:',kin])
 %%
     
   
@@ -87,7 +91,6 @@ outputname = strcat(kin,'_',date); % used in the output name
     end 
     clear i
 %%
-disp('put 1 or 0 in the response')
 % if there's at least 1 rupture per bin = 1, otherwise = 0
     hwall(hwall>0)=1;
     fwall(fwall>0)=1;
