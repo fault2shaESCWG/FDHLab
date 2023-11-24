@@ -7,10 +7,15 @@ pathSHP ='SHAPEFILES'
 if exist('pathSHP','dir') ==0
 mkdir (pathSHP)
 end
-kin = 'Reverse';
-%kin = 'Normal';
+
+for kin = 1:2
+    if kin ==1
+Kin = 'Normal';
+elseif kin ==2
+Kin = 'Reverse';
+    end
 %%
-T = readtable(fullfile(pathtable,strcat(kin,'_s_distance.txt')));
+T = readtable(fullfile(pathtable,strcat(Kin,'_s_distance.txt')));
 
 % 'IdE','Mw','IdO','latDR','lonDR','latPF','lonPF','RankDR','RankPF','ThrowDR','ThrowPFpoint','ThrowPFmean','distance','HWFW','kinR=1kinN=2'
 %%
@@ -31,6 +36,6 @@ end
 
 [Data(1:size(T,1)).Geometry] = deal('Line');
 %%
-shapewrite(Data, fullfile(pathSHP,strcat(kin,'_mappa_s.shp')));
-
+shapewrite(Data, fullfile(pathSHP,strcat(Kin,'_mappa_s.shp')));
+end
 %

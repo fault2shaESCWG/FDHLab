@@ -26,11 +26,12 @@ Simulations_figure = 100;% number of simulations placed in the figure
 %%
 % code
 SpaceDRLength = dr_over_tip_distance+Fault_length+dr_over_tip_distance ; % space where DR can occurr
-DRlengths_min_max = [8,165]; % minimum and maximum length of DR to be simulated
+R2_lengths_PCTS = readtable('TABLE_outputs/R2_histogram_length.txt','VariableNamingRule', 'preserve');
+DRlengths_min_max = [round(R2_lengths_PCTS{3,2}),round(R2_lengths_PCTS{3,3})]; % minimum and maximum length of DR to be simulated
 Site_pos = [round(Fault_length/2)-site_dim/2 round(Fault_length/2)+site_dim/2] ;% starting and ending position of the site respct to the left-tip
 zoom_x = [Site_pos(1)-site_dim*2 Site_pos(2)+site_dim*2]; % used to reduce dimensions in the figure
 %zoom_x = [0 Fault_length];
-%F = 0.007; %ratio between DRlength and PFlength
+% ratio between DRlength and PFlength
 if site_distance > 200
 fraction = load(fullfile('TABLE_outputs',['RATIOpcts_farfault',char(HWFW),'sim.txt']))
 elseif site_distance <= 200

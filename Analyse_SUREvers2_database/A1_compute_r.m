@@ -4,16 +4,16 @@
 % (iii) buffer_dist_R2_R15
 
 
-% OUTPUTS are tables in TABLE
+% OUTPUTS are tables in TABLE defined in pathout1
 %%
  clc
  clear all
  close all
+%% user input
 event_rev  = load('list_Reverse.txt');
 event_nor  = load('list_Normal.txt');
 id_all = [event_rev(:,1);event_nor(:,1)]
 
-%% user input
 maxdiff = 10; % in meters
 buffer_dist_R2_R15 = 1000; % in meters
 %% output paths
@@ -71,7 +71,7 @@ R = [dati_rupture.Comp_rank]';
     L = [dati_rupture.Length]';
     id_feature = [dati_rupture.IdS]';
     HW_FW_PF = [dati_rupture.HW_FW_PF]';
-    %% LA PARTE CHE SEGUE PUO' ESSERE SEMPLIFICATA SE TUTTI GLI SHAPE SONO OK
+    %% check that fields in the shapefiles are in the right format
     ispresent = isfield(dati_rupture,'IdS_PF')
     if ispresent ==1
     id_link  = [dati_rupture.IdS_PF]';
@@ -93,7 +93,6 @@ R = [dati_rupture.Comp_rank]';
     HWFW_near(HWind,1) = 1;
     HWFW_near(FWind,1) =-1;
     
-    %%
  
    %% saves the length, converts to UTM and resamples with maxdiff, returns to WGS
    disp(['eq ID:',id])
@@ -195,8 +194,8 @@ disp('code is calculating distances of each resampled point')
 disp('first loop for rank 2 DR')
  for j = 1:length(fault2_res_x) 
       prog = prog+1;
- %       length(fault2_res_x) -j;
-%% CHECK: se il segmento DR e' collegato o no a un segmento R1 o R1.5  	
+
+%% CHECK: if the DR segment is associated to a particular PF Rank 1 or a Rank 1.5 fault  	
   if fault2_res_linked(j) > 0  % distance must be computed from a particular feature 
 
       tempY = []; tempX = [];   
@@ -205,7 +204,7 @@ disp('first loop for rank 2 DR')
       tempY = fault_res_y(pos_id_feature) ;
       tempX = fault_res_x(pos_id_feature) ;
      
-      if  isempty(pos_id_feature) % se non e del R1 allora e' R1.5
+      if  isempty(pos_id_feature)
       pos_id_feature = find(fault15_res_id ==  fault2_res_linked(j));
       rango = 1.5;
       tempY = fault15_res_y(pos_id_feature) ;
@@ -222,7 +221,7 @@ disp('first loop for rank 2 DR')
         elseif ~isnan(fault2_res_hwfwNEAR(j))
          tempout = [tempout;str2num(id), prog, attributes_mindist(1:end-1), attributes_mindist(end)*fault2_res_hwfwNEAR(j),rango];    
         end
-  else  % se non è collegato a un segmento particolare
+  else  % if the DR segment is not associated to a particular PF Rank 1 or a Rank 1.5 fault  	
       
   
     dist1 = [];
@@ -232,9 +231,9 @@ disp('first loop for rank 2 DR')
     temp_attributes_mindist1 = [fault2_res_y(j),fault2_res_x(j),...
                                  fault_res_y(temp_pos_mindist1),fault_res_x(temp_pos_mindist1),fault2_res_Rank(j),min(dist1)];
    
-    % se esistono le R1.5 calcola la distanza anche da queste.
-    % il codice prende la minima distanza tra R2-R1 e R2-R1.5
-    % se la distanza da R1.5 e' > buffer viene scartata e viene usato HW_FW_PF
+    % if R1.5 exists then compute distances also from them.
+    % we save the minimum distance between  R2-R1 and R2-R1.5
+    % if the "distance R2- R1.5  > buffer" then the DR R2 is associated with the R1
     if ~isempty(fault15_res_y)
   
     dist15 = [];
@@ -270,7 +269,7 @@ disp('first loop for rank 2 DR')
       prog = prog+1;
         length(fault15_res_x) -j ;
   	
-  if fault15_res_linked(j) >0 % distance must be computed from a particular feature 
+  if fault15_res_linked(j) >0 % CHECK: if the R1.5 is associated to a particular segment R1 
 
       tempY = []; tempX = [];   
       pos_id_feature = find(fault_res_id ==  fault15_res_linked(j));
@@ -317,8 +316,7 @@ disp('code is calculating distances of each resampled point')
       prog = prog+1;
         length(fault3_res_x) -j ;
   	
-%  if isnan(fault2_res_linked(j)) ~= 1 % distance must be computed from a particular feature 
-  if fault3_res_linked(j) >0  % distance must be computed from a particular feature 
+  if fault3_res_linked(j) >0  % CHECK: if the R3 is associated to a particular PF Rank 1
 
       tempY = []; tempX = [];   
       pos_id_feature = find(fault_res_id ==  fault3_res_linked(j));

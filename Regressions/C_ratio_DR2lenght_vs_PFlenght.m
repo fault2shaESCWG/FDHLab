@@ -16,7 +16,7 @@ end
 %%   user defined inputs
 site_dim = [10,20,50,100,200,500]
 wstep = 10;
-bufferfault = 5; %metri
+bufferfault = 5; %meters
 maxdistance = 5000;  
 event_rev  = load(fullfile([pathin2,'list_Reverse.txt']));
 event_nor  = load(fullfile([pathin2,'list_Normal.txt']));
@@ -61,9 +61,6 @@ label(i,:) = [id];
 
 f_r1 = find(input_data.Rank==1);
 R1_length = [R1_length;input_data(f_r1,:)];
-
-    
-   %LMAIN(i,1) = sum(R1_length.length(R1_length.IdE==id));
    LMAIN_fromtable(i,1) = id_all(i,3)*1000; LMAIN(i,1) = LMAIN_fromtable(i,1);
     LHW2(i,1)  = sum(R2_lengths_HW.length(R2_lengths_HW.IdE==id));
     LFW2(i,1)  = sum(R2_lengths_FW.length(R2_lengths_FW.IdE==id));
@@ -165,3 +162,14 @@ writematrix([site_dim;pcts_1FWsim],'TABLE_outputs/RATIOpcts_nearfaultFWsim.txt')
 writematrix([site_dim;pcts_2HWsim],'TABLE_outputs/RATIOpcts_farfaultHWsim.txt')
 writematrix([site_dim;pcts_2FWsim],'TABLE_outputs/RATIOpcts_farfaultFWsim.txt')
 
+%% R2_histogram_lengths 
+R2_histogram_length = [];
+all_hwfw =[R2_lengths_HW;R2_lengths_FW];
+R2_histogram_length = [prctile(R2_lengths_HW.length, [16 84]); 
+                        prctile(R2_lengths_FW.length, [16 84]);
+                        prctile(all_hwfw.length, [16 84])];
+R2_histogram_length = array2table(R2_histogram_length);
+R2_histogram_length.Properties.VariableNames = {'16thPCT','84thPCT'};
+R2_histogram_length.Properties.RowNames = {'Hangingwall','Footwall','all'} ;        
+%%
+writetable(R2_histogram_length,['TABLE_outputs/','R2_histogram_length.txt'],'WriteRowNames',true);

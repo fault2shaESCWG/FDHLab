@@ -1,4 +1,4 @@
-%% questo codice fa il merge delle tabelle ottenute dallo script_A
+%% this code merges tables of r-distances produced by script_A1
 clear all
 clc
 %%

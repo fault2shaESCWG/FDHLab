@@ -1,3 +1,5 @@
+% this code interpolates coseismic throw along the R1.5
+
 clear all
 clc
 %%
@@ -33,13 +35,14 @@ IdE = unique(dati_point_all.IdE);
 out = [];
 for id = 1:length(IdE)
     %%
-% cerca e legge  i punti associati alle rotture R1.5
+% looks for measurements points associated with R1.5
 
 rows_point = find(dati_point_all.IdE == IdE(id) & dati_point_all.Comp_rank==R);
 %%
 dati_point = [dati_point_all.Longitude(rows_point), dati_point_all.Latitude(rows_point), dati_point_all.T(rows_point)];
 %%
-% assign SH to points with no-value in T
+% assign the value contained in the column "SH" of the database to points
+% with no-value of Throw
     nv_nsub = find(isnan(dati_point_all.T) & (dati_point_all.SH>0));
     for nsub = 1:length(nv_nsub)
     dati_point_all.T(nv_nsub(nsub)) = dati_point_all.SH(nv_nsub(nsub));
@@ -49,7 +52,7 @@ dati_point = [dati_point_all.Longitude(rows_point), dati_point_all.Latitude(rows
     dati_points = dati_point_all(nv,:);
 dati_point(isnan(dati_point(:,3)),:)=[];
 %
-if ~isempty(dati_point) % se ci sono punti di misura va avanti
+if ~isempty(dati_point) %if measurement points exist then calculate interpolation
 %%
 
      dati_rupture = [];
@@ -66,27 +69,20 @@ dati_point_mod = [];
 xq = [];yq = [];F = [];vq =[];
 x = [];y = [];v =[];
 %%
-% cerca e legge solo le rotture R1.5
-
-     rows = find([dati_rupture.Comp_rank]' == R);
-    
- 
-
+rows = find([dati_rupture.Comp_rank]' == R);
 dati = dati_rupture(rows,:);
 
 
-
-
 %%
-% assegna T = 0 ai tip di ogni segmento (diverso da PF)
+% assign Throw = 0 m to the tips of each R.15 segment (note this is different from B1 for the PF)
 
 for i = 1: size(dati,1)
 tips_all =   [tips_all; dati(i).X(1),dati(i).Y(1);dati(i).X(end-1),dati(i).Y(end-1)] ;
 end
-% aggiungo i punti con T =0 ai tip delle rotture 
+% add points with T =0 to the tips of the R1.5
 dati_point_mod = [dati_point;tips_all,repmat(0,size(tips_all,1),1)];
 %%
-% i punti dove interpolare sono i vertici dello shapefile
+% throw is interpolated at verteces of the shapefile
 xq = [];
 yq = [];  
 vect_IdS = [];
@@ -117,8 +113,6 @@ xq = [xq;xres];
 yq = [yq;yres]; 
 end
 
-% xq = [dati.X]';xq(isnan(xq)) = [];
-% yq = [dati.Y]';yq(isnan(yq)) = [];
 x = dati_point_mod(:,1);
 y = dati_point_mod(:,2);
 v = dati_point_mod(:,3);
@@ -135,11 +129,7 @@ vq(vq<0)=0;
 figure(id)
 hold on
 plot([dati.X]',[dati.Y]');
-%plot(dati_point(:,1),dati_point(:,2),'*')
-% plot(tips_dist(md,1),tips_dist(md,2),'ks')
-% plot(tips_dist(md,3),tips_dist(md,4),'ks')
 
-%plot(xq,yq,'o')
 scatter(xq,yq,30,vq,'filled')
 scatter(x,y,50,v,'Marker','s')
 text(x,y,num2str(v),'FontSize',6)
@@ -147,8 +137,6 @@ colorbar
 saveas(id,fullfile(pathoutFig,strcat(num2str(IdE(id)),'_rank15.png')),'png')
 %%
 close(id)
-%%
-
 
 %%
 

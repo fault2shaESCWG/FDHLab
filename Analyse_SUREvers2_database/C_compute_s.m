@@ -4,9 +4,12 @@
 clear all
 close all
 %% 
-kin = 1; event  = load('../list_Reverse.txt'); name = 'Reverse';
-%kin = 2; event  = load('list_Normal.txt');name = 'Normal';
-
+for kin = 1:2
+    if kin ==1
+        event  = load('list_Reverse.txt'); name = 'Reverse';
+    elseif kin == 2; 
+        event  = load('list_Normal.txt');name = 'Normal';
+    end
 %%
 buffer_from_R15 = 1000;
 e=referenceEllipsoid('earth');
@@ -17,8 +20,6 @@ mkdir(pathoutTable)
 end
 
 %% read the database of points
-
-
 dati_point_all = readtable(fullfile('SURE-main','SURE2.0_Slip_Obs_matlab.xlsx'),'format','auto');
 
 % Change names to numbers
@@ -46,8 +47,7 @@ dati_point_all.HW_FW_near = str2double(string(dati_point_all.HW_FW_near));
     DRpoints_all   =   dati_points(indDR,:);
 %%
 out = [];
-
- id_list = event(:,:)
+id_list = event(:,:)
 %%
     dati_rupture_all = [];
     dati_rupture_all = shaperead(fullfile('SURE-main','SURE2.0_ruptures','SURE2.0_ruptures.shp'));
@@ -61,15 +61,15 @@ out = [];
 dati_rupture_allIdE = [dati_rupture_all.IdE]';
 %%
 
-%id_list = [19990920,7.6]
 for i = 1:size(id_list,1)
 %%
 id       =  id_list(i,1)
 Mw_event =  id_list(i,2)
 %%
-% seleziona i punti dalla tabella corrispondenti all'id e divide per
-% R1.5,21,22 e 3(DRcomp) le cui distanze sono sempre da R1
-% R=2(DRsimple) le cui distanze possono essere da R1 o R1.5
+% select measurements points from the SURE excel corresponding to the
+% earthquake ID and classify for Rank
+% R1.5,21,22 e 3 have distances from R1
+% R2 can have disatnces from R1 or R1.5
 puntiDR = DRpoints_all(DRpoints_all.IdE == id,:);
 puntiDRcomp = puntiDR(puntiDR.Comp_rank ~= 2,:);
 puntiDRsimple = puntiDR(puntiDR.Comp_rank == 2,:);
@@ -119,13 +119,13 @@ else
     R1_vd_points = R1_vd_pointsTable;
    
 end
-% cerca il punto che minimizza la distanza
+% looks for the point that minimize the distance
 temp = distance(puntiDRcomp.Latitude(j),puntiDRcomp.Longitude(j),R1_vd_points.lat,R1_vd_points.lon,e);
 dist = min(temp);
 h_dist = find(temp == dist);
 coord_point = [R1_vd_points.lat(h_dist),R1_vd_points.lon(h_dist)];
 VD_PF =  R1_vd_points.Throw(h_dist);
-% cerca i punti tra tutti quelli di R1 che ricadono dentro un cerchio di raggio = distanza
+% looks for the points of R1 that are inside a given searching- radius
 raggio = dist/2;
 temp = [];
 temp = distance(coord_point(1,1),coord_point(1,2),R1_vd_pointsTable.lat,R1_vd_pointsTable.lon,e);
@@ -146,7 +146,7 @@ out = [out;id, Mw_event, puntiDRcomp.IdO(j),...
         dist,HWFW,kin];
         end
     end
-%%   puntiDRsimple
+%%  loop for R2
     if isempty(puntiDRsimple)
         disp(strcat('no points Rank 2 for eq id:',num2str(id)))
     else
@@ -175,7 +175,7 @@ else
     R1_vd_points = R1_vd_pointsTable;
     R15_vd_points = R15_vd_pointsTable;
 end
-% cerca il punto che minimizza la distanza
+% looks for the point that minimize the distance
 temp1 = distance(puntiDRsimple.Latitude(j),puntiDRsimple.Longitude(j),R1_vd_points.lat,R1_vd_points.lon,e);
 dist1 = min(temp1);
 if ~isempty(R15_vd_points)
@@ -192,7 +192,7 @@ if (dist1 <= dist2) | (dist2 > buffer_from_R15) | isnan(dist2)
 h_dist = find(temp1 == dist1);
 coord_point = [R1_vd_points.lat(h_dist),R1_vd_points.lon(h_dist)];
 VD_PF =  R1_vd_points.Throw(h_dist);   
-% cerca i punti tra tutti quelli di R1 che ricadono dentro un cerchio di raggio = distanza
+% looks for the points of R1 that are inside a given searching- radius
 raggio = dist1/2;
 temp = [];
 temp = distance(coord_point(1,1),coord_point(1,2),R1_vd_pointsTable.lat,R1_vd_pointsTable.lon,e);
@@ -213,7 +213,7 @@ elseif (dist1 > dist2) & (dist2 <= buffer_from_R15)
 h_dist = find(temp2 == dist2);
 coord_point = [R15_vd_points.lat(h_dist),R15_vd_points.lon(h_dist)];
 VD_PF =  R15_vd_points.Throw(h_dist);   
-% cerca i punti tra tutti quelli di R1 che ricadono dentro un cerchio di raggio = distanza
+% looks for the points of R1 that are inside a given searching- radius
 raggio = dist2/2;
 temp = [];
 temp = distance(coord_point(1,1),coord_point(1,2),R15_vd_pointsTable.lat,R15_vd_pointsTable.lon,e);
@@ -240,6 +240,6 @@ Tout = array2table(out);
 Tout.Properties.VariableNames = {'IdE','Mw','IdO','latDR','lonDR','latPF','lonPF','RankDR','RankPF','ThrowDR','ThrowPFpoint','ThrowPFmean','distance','HWFW','kinR=1kinN=2'};
 writetable(Tout,fullfile(pathoutTable,strcat(name,'_s_distance.txt')));%%%%
 
-
+end
 
 

@@ -1,3 +1,4 @@
+% this code interpolates coseismic throw along the PF
 clear all
 clc
 %%
@@ -42,27 +43,28 @@ xq = [];yq = [];F = [];vq =[];
 x = [];y = [];v =[];
     out = [];
     %%
-% cerca e legge  i punti associati alle rotture PF
+% looks for measurements points associated with PF
 
 rows_point = find(dati_point_all.IdE == IdE(id) & dati_point_all.Comp_rank== R);
 %%
 dati_point = [dati_point_all.Longitude(rows_point), dati_point_all.Latitude(rows_point), dati_point_all.T(rows_point)];
 %%
-% assign SH to points with no-value in T
+% assign the value contained in the column "SH" of the database to points
+% with no-value of Throw
     nv_nsub = find(isnan(dati_point_all.T) & (dati_point_all.SH>0));
     for nsub = 1:length(nv_nsub)
     dati_point_all.T(nv_nsub(nsub)) = dati_point_all.SH(nv_nsub(nsub));
     end
-% remove points with no value in T    
+% remove points with no value in T  and SH   
     nv = find(~isnan(dati_point_all.T));
     dati_points = dati_point_all(nv,:);
 
 dati_point(isnan(dati_point(:,3)),:)=[];
-% punti negativi li uso, poi faccio il valore assoluto
-% della interpolazione 
-% dati_point(:,3) = abs(dati_point(:,3));
+% points with negative values are used as the "-" sign indicates an
+% opposite kinematics. Here we use the absolute value
 
-if ~isempty(dati_point) % se ci sono punti di misura va avanti
+
+if ~isempty(dati_point) % if measurement points exist then calculate interpolation
 %
    dati_rupture = [];
      ind_id = find(dati_rupture_allIdE == IdE(id));
@@ -76,20 +78,18 @@ dati_point_mod = [];
 xq = [];yq = [];F = [];vq =[];
 x = [];y = [];v =[];
     rows = find([dati_rupture.Comp_rank]' == R);
-    
-
-
+ 
 dati = dati_rupture(rows,:);
 
-
 %%
-% assegna T = 0 ai tip
-% cerca i due tip piu' distanti per fare il limite della rottura totale
+% assign Throw = 0 m to the tips
+% the two most distant tips defininf the rupture length are given by a
+% bounding box- approach
 for i = 1: size(dati,1)
 tips_all =   [tips_all; dati(i).X(1),dati(i).Y(1);dati(i).X(end-1),dati(i).Y(end-1)] ;
 end
 %% 
-% crea una bounding box e prende il tip più vicini a ogni vertice
+% bounding box:  takes the tips nearets to each verteces of the bounding -box
 x1 = [];y1 =[];
 x1 = tips_all(:,1);
 y1 = tips_all(:,2);
@@ -111,21 +111,13 @@ md4 = min(dist4);pos_md4 = find(dist4 == md4);
 vect_md = [md1;md2;md3;md4];
 vect_pos_md = [pos_md1;pos_md2;pos_md3;pos_md4];
 [~,two_tips] = sortrows(vect_md);
-tip1 = [tips_all(vect_pos_md(two_tips(1)),1),tips_all(vect_pos_md(two_tips(1)),2)]
-tip2 = [tips_all(vect_pos_md(two_tips(2)),1),tips_all(vect_pos_md(two_tips(2)),2)]
+tip1 = [tips_all(vect_pos_md(two_tips(1)),1),tips_all(vect_pos_md(two_tips(1)),2)];
+tip2 = [tips_all(vect_pos_md(two_tips(2)),1),tips_all(vect_pos_md(two_tips(2)),2)];
 
-
-%%
-% max distanza tra i tips
-% ci sono due valori identici di max dist perchè simmettrico, 
-%md = find(tips_dist(:,end) == max(tips_dist(:,end)),1,'first');
-%%
-% aggiungo i due punti con T = 0 ai tip della rottura
-%dati_point_mod = [dati_point;tips_dist(md,1),tips_dist(md,2),0;tips_dist(md,3),tips_dist(md,4),0];
 dati_point_mod = [dati_point;tip1(1,1),tip1(1,2),0;tip2(1,1),tip2(1,2),0];
 
 %%
-% i punti dove interpolare sono i vertici dello shapefile
+% throw is interpolated at verteces of the shapefile
 xq = [];
 yq = [];  
 vect_IdS = [];
@@ -155,8 +147,6 @@ vect_IdS = [vect_IdS;repmat(IdStemp,length(xres),1)];
 xq = [xq;xres];
 yq = [yq;yres];    
     
-% xq = [dati.X]';xq(isnan(xq)) = [];
-% yq = [size(xq)dati.Y]';yq(isnan(yq)) = [];
 end
 x = dati_point_mod(:,1);
 y = dati_point_mod(:,2);

@@ -13,8 +13,13 @@ output_i_wstep_BC3 = [];
 pathin = '../Analyse_SUREvers2_database/TABLE_db_20231026';
 pathin2 = '../Analyse_SUREvers2_database/';
 
-kin = 'Reverse'
-%kin = 'Normal'
+for kin = 1:2
+    if kin ==1
+Kin = 'Normal';
+elseif kin ==2
+Kin = 'Reverse';
+    end
+
 sizes = [10,20,50,100,200,500];
 bufferfault = 5; % we discard the first meters  from the main fault
 maxdistance = 20000;
@@ -25,18 +30,18 @@ if isempty(dir(pathout1))
 mkdir(pathout1)
 end
 
-input_data  = readtable(fullfile(pathin,[kin,'_r_distance_table.txt'])); % input data
-event_mw_l  = load(fullfile([pathin2,'list_',kin,'.txt']));
+input_data  = readtable(fullfile(pathin,[Kin,'_r_distance_table.txt'])); % input data
+event_mw_l  = load(fullfile([pathin2,'list_',Kin,'.txt']));
 i_wstep = 0;
 
 %%
-disp(['calculating logistic for:',kin])
+disp(['calculating logistic for:',Kin])
 %%
     
   
 x_bin        = bufferfault:10:(maxdistance+bufferfault); % edges of the classes
 x_centre     = x_bin + 10/2; % centre of the classes of distance for the plot
-outputname = strcat(kin,'_',date); % used in the output name
+outputname = strcat(Kin,'_',date); % used in the output name
 
 %% 
     count_eq =size(event_mw_l,1)
@@ -177,7 +182,8 @@ output_i_wstep_BC3 = [output_i_wstep_BC3,tempC3];
 end
 
 
-save(strcat(pathout1,'/parameters_logistic_multisizeC1_',kin,'.txt'),'output_i_wstep_BC1','-ascii')
-save(strcat(pathout1,'/parameters_logistic_multisizeC2_',kin,'.txt'),'output_i_wstep_BC2','-ascii')
-save(strcat(pathout1,'/parameters_logistic_multisizeC3_',kin,'.txt'),'output_i_wstep_BC3','-ascii')
+save(strcat(pathout1,'/parameters_logistic_multisizeC1_',Kin,'.txt'),'output_i_wstep_BC1','-ascii')
+save(strcat(pathout1,'/parameters_logistic_multisizeC2_',Kin,'.txt'),'output_i_wstep_BC2','-ascii')
+save(strcat(pathout1,'/parameters_logistic_multisizeC3_',Kin,'.txt'),'output_i_wstep_BC3','-ascii')
 
+end

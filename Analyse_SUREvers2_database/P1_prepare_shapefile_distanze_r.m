@@ -1,4 +1,4 @@
-% questo codice prepara lo shapefile delle distanze r
+% this codes prepare a shapefile of r-distances
 clear all
 clc
 %%
@@ -8,9 +8,12 @@ if exist('pathSHP','dir') ==0
 mkdir (pathSHP)
 end
 
+for kin = 1:2
+    if kin ==1
 Kin = 'Normal';
-%Kin = 'Reverse';
-
+elseif kin ==2
+Kin = 'Reverse';
+    end
 %%
 T = readtable(fullfile(pathtable,strcat(Kin,'_r_distance_table.txt')));
 %%
@@ -31,4 +34,4 @@ end
 %%
 shapewrite(Data, fullfile(pathSHP,strcat(Kin,'_mappa_r.shp')));
 
-%
+end
