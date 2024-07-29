@@ -14,32 +14,35 @@ mkdir(path2)
 end
 
 %%   user defined inputs
-site_dim = [10,20,50,100,200,500]
-wstep = 10;% place slices every wstep meters
+Across_strike_site_dim = [10,20,50,100,200,500]
+step_slices = 10;% place slices every wstep meters
 bufferfault = 5; %meters
-maxdistance = 5000;  
-event_rev  = load(fullfile([pathin2,'list_Reverse.txt']));
-event_nor  = load(fullfile([pathin2,'list_Normal.txt']));
+maxdistance = 5000; 
+nearfield = 200; % this is the near/far field threshold in meters
+SoF_label = {'Reverse','Normal'};
+SoF = 1; % Reverse
+%SoF = 2; % Normal
 
-id_all = [event_rev(1:end,:);event_nor(:,:)];
+if SoF ==1
+event_id  = load(fullfile([pathin2,'list_Reverse.txt']));
+input_data_rdist  = readtable(fullfile(pathin,'Reverse_r_distance_table.txt')); % input data
 
-%%   
+else SoF == 2
+event_id  = load(fullfile([pathin2,'list_Normal.txt']));
+input_data_rdist  = readtable(fullfile(pathin,'Normal_r_distance_table.txt')); % input data
 
-input_data_rdistnorm  = readtable(fullfile(pathin,'Normal_r_distance_table.txt')); % input data
+end
+id_all = [event_id(1:end,:)];
 
-input_data_rdistrev  = readtable(fullfile(pathin,'Reverse_r_distance_table.txt')); % input data
- 
-R_dist_table = [input_data_rdistnorm;input_data_rdistrev];
+R_dist_table = [input_data_rdist];
 %%
 
-x_hw        = bufferfault:wstep:(maxdistance+bufferfault);
-x_fw        = -(maxdistance+bufferfault):wstep:-bufferfault;      
+x_hw        = bufferfault:step_slices:(maxdistance+bufferfault);
+x_fw        = -(maxdistance+bufferfault):step_slices:-bufferfault;      
 
-                
-    tabella = [];
 
-    PROPORZIONE_HWsim = [];
-    PROPORZIONE_FWsim = [];
+    RATIO_HWsim = [];
+    RATIO_FWsim = [];
 
     hwsim   = []; 
     fwsim   = [];  
@@ -77,22 +80,24 @@ R1_length = [R1_length;input_data(f_r1,:)];
   
     length_hwsim(:,i) = hwsim(:,i)./sum(hwsim(:,i))*LHW2(i,1);
     length_fwsim(:,i) = fwsim(:,i)./sum(fwsim(:,i))*LFW2(i,1);
-    PROPORZIONE_HWsim = [PROPORZIONE_HWsim,length_hwsim(:,i)/ LMAIN(i,1)];
-    PROPORZIONE_FWsim = [PROPORZIONE_FWsim,length_fwsim(:,i)/ LMAIN(i,1)];
+    RATIO_HWsim = [RATIO_HWsim,length_hwsim(:,i)/ LMAIN(i,1)];
+    RATIO_FWsim = [RATIO_FWsim,length_fwsim(:,i)/ LMAIN(i,1)];
     
 
     
 end
 
-%%
-msize = 10;
-col = colormap('jet');
-pos_col = round(linspace(1,size(col,1),size(id_all,1)));
-col_sof = col(pos_col,:);
-i_wstep = 0;
-for wstep = site_dim% spacing in meters of the site (number of slices)
+%% here we compute the ratio between DR-lengths and PF lenghts
+% we compute the mean of the percentiles (50th, 84th, 97.5th) of this ratio
+% for each earthquake
+
+msize = 10; % dimension of points in the figure
+
+i_wstep = 0; % to identify the column in the table, it has the same dimension of the length of Across_strike_site_dim vector
+% assd = take the ith Across_strike_site_dim defined in the inputs
+for assd = Across_strike_site_dim % spacing in meters of the site (number of slices)
 i_wstep = i_wstep+1;
-num_slices = round(wstep/10);
+num_slices = round(assd/step_slices);
 
 site_hw_R2 = [];
 site_fw_R2 = [];
@@ -104,8 +109,8 @@ DdataHW = [];
    DdataHW = [DdataHW;mean([x_hw(i), x_hw(ending)])];
   
 
-    site_hw_R2 = [site_hw_R2;sum(PROPORZIONE_HWsim(i:ending,:),1)];
-    site_fw_R2 = [site_fw_R2;sum(PROPORZIONE_FWsim(i:ending,:),1)];
+    site_hw_R2 = [site_hw_R2;sum(RATIO_HWsim(i:ending,:),1)];
+    site_fw_R2 = [site_fw_R2;sum(RATIO_FWsim(i:ending,:),1)];
 
  
 
@@ -114,8 +119,8 @@ DdataHW = [];
 DdataFW = -1*DdataHW;
 
 
-nearfield = 200;
-if wstep > nearfield
+
+if assd > nearfield
     nearfield = nearfield + num_slices;
 end
 temphw_near = site_hw_R2(DdataHW <= nearfield,:);
@@ -134,13 +139,10 @@ pcts_2FWsim(:,i_wstep) = nanmean(prctile(tempfw_far,[50, 84, 97.5],1),2);
 
 figure(i_wstep)
 hold on
+title(['SoF:',SoF_label(SoF),'Across strike S.D:',num2str(assd)])
 for i = 1:size(id_all,1)
 plot(DdataHW,site_hw_R2(:,i),'.','MarkerSize',msize,'color',[0.4 0.4 0.4])
 plot(DdataFW,site_fw_R2(:,i),'.','MarkerSize',msize,'color',[0.4 0.4 0.4])
-% in case you want to color points using ID uncomment and use the following
-% two lines instead of the previous two
-%hleg(i) = plot(DdataHW,site_hw_R2(:,i),'.','MarkerSize',msize,'color',col_sof(i,:),'Display',num2str(id_all(i,1)));
-%plot(DdataFW,site_fw_R2(:,i),'.','MarkerSize',msize,'color',col_sof(i,:))
 end
 line([5 nearfield],[pcts_1HWsim(3,i_wstep) pcts_1HWsim(3,i_wstep)],'color','k');
 line([-nearfield -5],[pcts_1FWsim(3,i_wstep) pcts_1FWsim(3,i_wstep)],'color','k');
@@ -153,14 +155,14 @@ ylim([0 1])
 set(gca,'YScale','log')
 xlabel( 'Ratio' )
 ylabel( 'Distance from the PF (m)' )
-saveas(i_wstep,fullfile(path2,['Ratio',num2str(site_dim(i_wstep)),'meters_',date,'.pdf']),'pdf')
+saveas(i_wstep,fullfile(path2,['SoF_','Ratio',num2str(assd),'meters_',date,'.pdf']),'pdf')
 
 end
 %%
-writematrix([site_dim;pcts_1HWsim],'TABLE_outputs/RATIOpcts_nearfaultHWsim.txt')
-writematrix([site_dim;pcts_1FWsim],'TABLE_outputs/RATIOpcts_nearfaultFWsim.txt')
-writematrix([site_dim;pcts_2HWsim],'TABLE_outputs/RATIOpcts_farfaultHWsim.txt')
-writematrix([site_dim;pcts_2FWsim],'TABLE_outputs/RATIOpcts_farfaultFWsim.txt')
+writematrix([Across_strike_site_dim;pcts_1HWsim],'TABLE_outputs/RATIOpcts_nearfaultHWsim.txt')
+writematrix([Across_strike_site_dim;pcts_1FWsim],'TABLE_outputs/RATIOpcts_nearfaultFWsim.txt')
+writematrix([Across_strike_site_dim;pcts_2HWsim],'TABLE_outputs/RATIOpcts_farfaultHWsim.txt')
+writematrix([Across_strike_site_dim;pcts_2FWsim],'TABLE_outputs/RATIOpcts_farfaultFWsim.txt')
 
 %% R2_histogram_lengths 
 R2_histogram_length = [];

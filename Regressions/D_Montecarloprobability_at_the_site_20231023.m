@@ -17,7 +17,7 @@ end
 % USER DEFINED INPUTS
 % length of the fault (in meter)
 Fault_length = 30000;
-dr_over_tip_distance = 0;%(in meter) >0 to place DR over the tips
+%dr_over_tip_distance = 0;%(in meter) >0 to place DR over the tips
 site_dim = 500; % meters
 site_distance = 100;% meters from the PF
 HWFW = 'HW'; % HW = Hanging wall; FW = Footwall location of the site
@@ -25,7 +25,8 @@ Simulations = 10^4 ;% number of simulations
 Simulations_figure = 100;% number of simulations placed in the figure
 %%
 % code
-SpaceDRLength = dr_over_tip_distance+Fault_length+dr_over_tip_distance ; % space where DR can occurr
+%SpaceDRLength = dr_over_tip_distance+Fault_length+dr_over_tip_distance ; % space where DR can occurr
+SpaceDRLength = dFault_length; % space where DR can occurr
 R2_lengths_PCTS = readtable('TABLE_outputs/R2_histogram_length.txt','VariableNamingRule', 'preserve');
 DRlengths_min_max = [round(R2_lengths_PCTS{3,2}),round(R2_lengths_PCTS{3,3})]; % minimum and maximum length of DR to be simulated
 Site_pos = [round(Fault_length/2)-site_dim/2 round(Fault_length/2)+site_dim/2] ;% starting and ending position of the site respct to the left-tip
