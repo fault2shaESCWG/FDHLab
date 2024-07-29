@@ -139,7 +139,7 @@ pcts_2FWsim(:,i_wstep) = nanmean(prctile(tempfw_far,[50, 84, 97.5],1),2);
 
 figure(i_wstep)
 hold on
-title(['SoF:',SoF_label{SoF},'Across strike S.D:',num2str(assd)])
+title(['SoF:',SoF_label{SoF},', Across strike S.D:',num2str(assd)])
 for i = 1:size(id_all,1)
 plot(DdataHW,site_hw_R2(:,i),'.','MarkerSize',msize,'color',[0.4 0.4 0.4])
 plot(DdataFW,site_fw_R2(:,i),'.','MarkerSize',msize,'color',[0.4 0.4 0.4])
