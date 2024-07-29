@@ -139,7 +139,7 @@ pcts_2FWsim(:,i_wstep) = nanmean(prctile(tempfw_far,[50, 84, 97.5],1),2);
 
 figure(i_wstep)
 hold on
-title(['SoF:',SoF_label(SoF),'Across strike S.D:',num2str(assd)])
+title(['SoF:',SoF_label{SoF},'Across strike S.D:',num2str(assd)])
 for i = 1:size(id_all,1)
 plot(DdataHW,site_hw_R2(:,i),'.','MarkerSize',msize,'color',[0.4 0.4 0.4])
 plot(DdataFW,site_fw_R2(:,i),'.','MarkerSize',msize,'color',[0.4 0.4 0.4])
@@ -155,14 +155,14 @@ ylim([0 1])
 set(gca,'YScale','log')
 xlabel( 'Ratio' )
 ylabel( 'Distance from the PF (m)' )
-saveas(i_wstep,fullfile(path2,['SoF_',SoF_label(SoF),'_Ratio',num2str(assd),'meters_',date,'.pdf']),'pdf')
+saveas(i_wstep,fullfile(path2,['SoF_',SoF_label{SoF},'_Ratio',num2str(assd),'meters_',date,'.pdf']),'pdf')
 
 end
 %%
-writematrix([Across_strike_site_dim;pcts_1HWsim],['TABLE_outputs/',SoF_label(SoF),'RATIOpcts_nearfaultHWsim.txt'])
-writematrix([Across_strike_site_dim;pcts_1FWsim],['TABLE_outputs/',SoF_label(SoF),'RATIOpcts_nearfaultFWsim.txt'])
-writematrix([Across_strike_site_dim;pcts_2HWsim],['TABLE_outputs/',SoF_label(SoF),'RATIOpcts_farfaultHWsim.txt'])
-writematrix([Across_strike_site_dim;pcts_2FWsim],['TABLE_outputs/',SoF_label(SoF),'RATIOpcts_farfaultFWsim.txt'])
+writematrix([Across_strike_site_dim;pcts_1HWsim],['TABLE_outputs/',SoF_label{SoF},'RATIOpcts_nearfaultHWsim.txt'])
+writematrix([Across_strike_site_dim;pcts_1FWsim],['TABLE_outputs/',SoF_label{SoF},'RATIOpcts_nearfaultFWsim.txt'])
+writematrix([Across_strike_site_dim;pcts_2HWsim],['TABLE_outputs/',SoF_label{SoF},'RATIOpcts_farfaultHWsim.txt'])
+writematrix([Across_strike_site_dim;pcts_2FWsim],['TABLE_outputs/',SoF_label{SoF},'RATIOpcts_farfaultFWsim.txt'])
 
 %% R2_histogram_lengths 
 R2_histogram_length = [];
@@ -174,4 +174,4 @@ R2_histogram_length = array2table(R2_histogram_length);
 R2_histogram_length.Properties.VariableNames = {'16thPCT','84thPCT'};
 R2_histogram_length.Properties.RowNames = {'Hangingwall','Footwall','all'} ;        
 %%
-writetable(R2_histogram_length,['TABLE_outputs/',SoF_label(SoF),'_R2_histogram_length.txt'],'WriteRowNames',true);
+writetable(R2_histogram_length,['TABLE_outputs/',SoF_label{SoF},'_R2_histogram_length.txt'],'WriteRowNames',true);
