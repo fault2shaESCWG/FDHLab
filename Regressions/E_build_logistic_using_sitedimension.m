@@ -10,12 +10,12 @@ x = 5:10:5000;
 site_dim = 500;
 site_distance = 100;% meters from the PF
 HWFW = 'HW'; % HW = Hanging wall; FW = Footwall location of the site
-kin = 'Reverse';
-%kin = 'Normal';
-param_logistic = load(fullfile('TABLE_outputs',['parameters_logistic_multisizeC1_',char(kin),'.txt']));
+SoF = 'Reverse';
+%SoF = 'Normal';
+param_logistic = load(fullfile('TABLE_outputs',['parameters_logistic_multisizeC1_',char(SoF),'.txt']));
 
 %%
-Pname = fullfile('TABLE_outputs',['P_montecarlo_SiteDim',num2str(site_dim),'_SiteDist',num2str(site_distance),'_',char(HWFW),'.txt']);
+Pname = fullfile('TABLE_outputs',[SoF,'_P_montecarlo_SiteDim',num2str(site_dim),'_SiteDist',num2str(site_distance),'_',char(HWFW),'.txt']);
 P_montecarlo_table = readtable(Pname)
 P_montecarlo = P_montecarlo_table.Punif;
 %%

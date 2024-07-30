@@ -13,14 +13,14 @@ output_i_wstep_BC3 = [];
 pathin = '../Analyse_SUREvers2_database/TABLE_db_20231026';
 pathin2 = '../Analyse_SUREvers2_database/';
 
-for kin = 1:2
-    if kin ==1
+for SoF = 1:2
+    if SoF ==1
 Kin = 'Normal';
-elseif kin ==2
+elseif SoF ==2
 Kin = 'Reverse';
     end
 
-sizes = [10,20,50,100,200,500];
+slice_width = [10,20,50,100,200,500];
 bufferfault = 5; % we discard the first meters  from the main fault
 maxdistance = 20000;
 
@@ -106,7 +106,7 @@ outputname = strcat(Kin,'_',date); % used in the output name
     hw_Rcomp_R1(hw_Rcomp_R1>0)=1;
     fw_Rcomp_R1(fw_Rcomp_R1>0)=1;
 %%    
-for wstep = sizes% spacing in meters of the site (number of slices)
+for wstep = slice_width% spacing in meters of the site (number of slices)
 i_wstep = i_wstep+1;
 num_slices = round(wstep/10);
 

@@ -1,4 +1,4 @@
-% this code calculates the P of DR rank 2 occurrence in a site using a montecarlo approach
+% this code calculates the P of DR rank 2 occurrence at s ite using a montecarlo approach 
 clc
 clear all
 close all
@@ -18,28 +18,29 @@ end
 % length of the fault (in meter)
 Fault_length = 30000;
 %dr_over_tip_distance = 0;%(in meter) >0 to place DR over the tips
-site_dim = 500; % meters
+along_strike_dimension = 500; % meters
 site_distance = 100;% meters from the PF
+SoF = ['Normal' ];
 HWFW = 'HW'; % HW = Hanging wall; FW = Footwall location of the site
 Simulations = 10^4 ;% number of simulations
 Simulations_figure = 100;% number of simulations placed in the figure
 %%
 % code
 %SpaceDRLength = dr_over_tip_distance+Fault_length+dr_over_tip_distance ; % space where DR can occurr
-SpaceDRLength = dFault_length; % space where DR can occurr
-R2_lengths_PCTS = readtable('TABLE_outputs/R2_histogram_length.txt','VariableNamingRule', 'preserve');
+SpaceDRLength = Fault_length; % space where DR can occurr
+R2_lengths_PCTS = readtable(['TABLE_outputs/',SoF,'_R2_histogram_length.txt'],'VariableNamingRule', 'preserve');
 DRlengths_min_max = [round(R2_lengths_PCTS{3,2}),round(R2_lengths_PCTS{3,3})]; % minimum and maximum length of DR to be simulated
-Site_pos = [round(Fault_length/2)-site_dim/2 round(Fault_length/2)+site_dim/2] ;% starting and ending position of the site respct to the left-tip
-zoom_x = [Site_pos(1)-site_dim*2 Site_pos(2)+site_dim*2]; % used to reduce dimensions in the figure
+Site_pos = [round(Fault_length/2)-along_strike_dimension/2 round(Fault_length/2)+along_strike_dimension/2] ;% starting and ending position of the site respct to the left-tip
+zoom_x = [Site_pos(1)-along_strike_dimension*2 Site_pos(2)+along_strike_dimension*2]; % used to reduce dimensions in the figure
 %zoom_x = [0 Fault_length];
 % ratio between DRlength and PFlength
 if site_distance > 200
-fraction = load(fullfile('TABLE_outputs',['RATIOpcts_farfault',char(HWFW),'sim.txt']))
+fraction = load(fullfile('TABLE_outputs',[SoF,'RATIOpcts_farfault',char(HWFW),'sim.txt']))
 elseif site_distance <= 200
-fraction = load(fullfile('TABLE_outputs',['RATIOpcts_nearfault',char(HWFW),'sim.txt']))
+fraction = load(fullfile('TABLE_outputs',[SoF,'RATIOpcts_nearfault',char(HWFW),'sim.txt']))
 end
 
-fcol = find(fraction(1,:)==site_dim);
+fcol = find(fraction(1,:)==along_strike_dimension);
 F = fraction(4,fcol);%ratio between DRlength and PFlength
 total_DR_lenght = Fault_length*F;% (in meters)
 
@@ -119,7 +120,7 @@ end
 Prob_unif = Rupture_yes_case_unif / Total_cases;
 Prob_cluster = Rupture_yes_case_cluster / Total_cases;
 %%
-Pname = fullfile('TABLE_outputs',['P_montecarlo_SiteDim',num2str(site_dim),'_SiteDist',num2str(site_distance),'_',char(HWFW),'.txt']);
+Pname = fullfile('TABLE_outputs',[SoF,'_P_montecarlo_SiteDim',num2str(along_strike_dimension),'_SiteDist',num2str(site_distance),'_',char(HWFW),'.txt']);
 Pout = table(Prob_unif,Prob_unif,(Prob_unif+Prob_unif)/2,'VariableNames',{'Punif','Pexp','Pmean'});
 writetable(Pout,Pname);
 %%
@@ -155,5 +156,5 @@ set(gca,'XTick',[],'YTick',0:10:Simulations_figure)
 xlabel('Distance along the strike of the PF (m)')
 ylabel('simulations')
 %%
-saveas(1,fullfile(path2,['simulations_momntecarlo_SiteDim',num2str(site_dim),'_SiteDist',num2str(site_distance),'_',char(HWFW),'.pdf']),'pdf')
+saveas(1,fullfile(path2,[SoF,'_simulations_momntecarlo_SiteDim',num2str(along_strike_dimension),'_SiteDist',num2str(site_distance),'_',char(HWFW),'.pdf']),'pdf')
 
