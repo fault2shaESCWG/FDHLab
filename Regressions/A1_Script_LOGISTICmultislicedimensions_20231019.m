@@ -34,6 +34,8 @@ input_data  = readtable(fullfile(pathin,[Kin,'_r_distance_table.txt'])); % input
 event_mw_l  = load(fullfile([pathin2,'list_',Kin,'.txt']));
 i_wstep = 0;
 
+tempC1 = [];tempC2 = [];tempC3 = [];
+output_i_wstep_BC1 = [];output_i_wstep_BC2 = [];output_i_wstep_BC3 = [];
 %%
 disp(['calculating logistic for:',Kin])
 %%

@@ -6,11 +6,12 @@ close all
 
 %%
 
-pathout1 ='../Analyse_SUREvers2_database/TABLE_db_20231026';
-path2 = fullfile('FIGURE','residual');
+%pathout1 ='../Analyse_SUREvers2_database/TABLE_db_20231026';
+pathout1 ='TABLE_outputs';
+pathout2 = fullfile('FIGURE','residual');
 
-if isempty(dir(path2))
-mkdir(path2)
+if isempty(dir(pathout2))
+mkdir(pathout2)
 end
 
 pathinputs = '../Analyse_SUREvers2_database/TABLE_db_20231026'
@@ -150,7 +151,7 @@ ylim([-5 5])
 ylabel('residual (data – fit)')
 xlabel ('distance (m)')
 hold off
-saveas(3,fullfile(path2,'Residuals_vs_distance.pdf'),'pdf')
+saveas(3,fullfile(pathout2,'Residuals_vs_distance.pdf'),'pdf')
 
 %%
 col = colormap('jet');
@@ -217,5 +218,5 @@ for s = 1:2
    end
 
 end
-saveas(1,fullfile(path2,'REVERSE_combination_vs_distanza.pdf'),'pdf')
-saveas(2,fullfile(path2,'NORMAL_combination_vs_distanza.pdf'),'pdf')
+saveas(1,fullfile(pathout2,'REVERSE_combination_vs_distanza.pdf'),'pdf')
+saveas(2,fullfile(pathout2,'NORMAL_combination_vs_distanza.pdf'),'pdf')
