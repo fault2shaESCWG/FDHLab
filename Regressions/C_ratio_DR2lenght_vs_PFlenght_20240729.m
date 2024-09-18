@@ -163,7 +163,8 @@ writematrix([Across_strike_site_dim;pcts_1HWsim],['TABLE_outputs/',SoF_label{SoF
 writematrix([Across_strike_site_dim;pcts_1FWsim],['TABLE_outputs/',SoF_label{SoF},'RATIOpcts_nearfaultFWsim.txt'])
 writematrix([Across_strike_site_dim;pcts_2HWsim],['TABLE_outputs/',SoF_label{SoF},'RATIOpcts_farfaultHWsim.txt'])
 writematrix([Across_strike_site_dim;pcts_2FWsim],['TABLE_outputs/',SoF_label{SoF},'RATIOpcts_farfaultFWsim.txt'])
-
+%%
+T_paper = [pcts_1HWsim(3,:);pcts_2HWsim(3,:);pcts_1FWsim(3,:);pcts_2FWsim(3,:)];
 %% R2_histogram_lengths 
 R2_histogram_length = [];
 all_hwfw =[R2_lengths_HW;R2_lengths_FW];

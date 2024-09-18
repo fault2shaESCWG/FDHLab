@@ -71,6 +71,25 @@ coeff = table(lme7.Coefficients.Name,lme7.Coefficients.Estimate,lme7.Coefficient
 sigma_value = sqrt(lme7.MSE);
 writetable(coeff,fullfile(pathout1,'coefficients_throw.txt'));
 save(fullfile(pathout1,'sigma.txt'),'sigma_value','-ascii');
+%%
+coeff = table(lme7.Coefficients.Name,lme7.Coefficients.Estimate,lme7.Coefficients.pValue,'VariableNames',{'name','value','p-value'});
+
+% Matrice di covarianza dei coefficienti 
+cov_matrix = lme7.CoefficientCovariance;
+
+% Calcola la diagonale della matrice di covarianza
+cov_diagonal = diag(cov_matrix);
+
+% Calcola la matrice di correlazione
+corr_matrix_coefficients = cov_matrix ./ sqrt(cov_diagonal * cov_diagonal');
+
+% Visualizza la matrice di correlazione
+disp('Matrice di correlazione dei coefficienti:');
+disp(corr_matrix_coefficients);
+
+% Scrivi la matrice di correlazione su file
+writematrix(corr_matrix_coefficients, fullfile(pathout1, 'coefficients_correlation_matrix.txt'));
+
 %% residuals
 
 T.lme7residuals = lme7.residuals;

@@ -3,15 +3,15 @@ clear all
 pathout1 = 'FIGURE/Logistic';
 mkdir(pathout1)
 %%   user defined inputs
-nameforfigure = 'Reverse_m6.5_dist100_dim500';
+nameforfigure = 'Normal_m6.7_dist7600_dim100';
 % calculate logistic for a given combination in "param_logistic"
-m = 6.5;
-x = 5:10:5000;
-site_dim = 500;
-site_distance = 100;% meters from the PF
+m = 6.7;
+x = 5:10:8000;
+site_dim = 100;
+site_distance = 7600;% meters from the PF
 HWFW = 'HW'; % HW = Hanging wall; FW = Footwall location of the site
-SoF = 'Reverse';
-%SoF = 'Normal';
+%SoF = 'Reverse';
+SoF = 'Normal';
 param_logistic = load(fullfile('TABLE_outputs',['parameters_logistic_multisizeC1_',char(SoF),'.txt']));
 
 %%

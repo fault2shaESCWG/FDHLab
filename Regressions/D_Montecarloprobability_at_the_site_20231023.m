@@ -15,12 +15,16 @@ mkdir(path2)
 end
 %%
 % USER DEFINED INPUTS
+% sampling of legths 1 for uniform 2 for lognormal
+SL = 1;
 % length of the fault (in meter)
-Fault_length = 30000;
+%Fault_length = 5800;
+Fault_length = 34000;
 %dr_over_tip_distance = 0;%(in meter) >0 to place DR over the tips
-along_strike_dimension = 500; % meters
-site_distance = 100;% meters from the PF
-SoF = ['Normal' ];
+along_strike_dimension = 100; % meters
+site_distance = 7600;% meters from the PF
+%SoF = ['Reverse'];
+SoF = ['Normal'];
 HWFW = 'HW'; % HW = Hanging wall; FW = Footwall location of the site
 Simulations = 10^4 ;% number of simulations
 Simulations_figure = 100;% number of simulations placed in the figure
@@ -28,8 +32,19 @@ Simulations_figure = 100;% number of simulations placed in the figure
 % code
 %SpaceDRLength = dr_over_tip_distance+Fault_length+dr_over_tip_distance ; % space where DR can occurr
 SpaceDRLength = Fault_length; % space where DR can occurr
+
 R2_lengths_PCTS = readtable(['TABLE_outputs/',SoF,'_R2_histogram_length.txt'],'VariableNamingRule', 'preserve');
-DRlengths_min_max = [round(R2_lengths_PCTS{3,2}),round(R2_lengths_PCTS{3,3})]; % minimum and maximum length of DR to be simulated
+R2_LOGN = readtable(['TABLE_outputs/',SoF,'LOGN_MU_SIGMA.txt'],'VariableNamingRule', 'preserve');
+
+if strcmp(HWFW,'HW')==1
+        DRlengths_min_max = [round(R2_lengths_PCTS{1,2}),round(R2_lengths_PCTS{1,3})]; % minimum and maximum length of DR to be simulated
+    logn_MU = R2_LOGN{1,2};logn_SIGMA = R2_LOGN{1,3}; 
+elseif strcmp(HWFW,'FW')==1
+        DRlengths_min_max = [round(R2_lengths_PCTS{2,2}),round(R2_lengths_PCTS{2,3})]; % minimum and maximum length of DR to be simulated
+    logn_MU = R2_LOGN{2,2};logn_SIGMA = R2_LOGN{2,3};     
+end
+
+
 Site_pos = [round(Fault_length/2)-along_strike_dimension/2 round(Fault_length/2)+along_strike_dimension/2] ;% starting and ending position of the site respct to the left-tip
 zoom_x = [Site_pos(1)-along_strike_dimension*2 Site_pos(2)+along_strike_dimension*2]; % used to reduce dimensions in the figure
 %zoom_x = [0 Fault_length];
@@ -53,11 +68,18 @@ Rupture_yes_case_unif =  0 ;
 Rupture_yes_case_cluster =  0 ;
 
 %% random sampling of the lenghts of DR
+if SL ==1
 mu = mean([DRlengths_min_max]);
 t1 = min(DRlengths_min_max); 
 t2 = max(DRlengths_min_max); 
 truncPD = truncate(makedist('Normal','mu',mu,'sigma',(t2-t1)/2),t1,t2);
 ypdf = truncPD.pdf(t1:t2);
+elseif SL ==2
+t1 = min(DRlengths_min_max); 
+t2 = max(DRlengths_min_max); 
+truncPD = truncate(makedist('Lognormal','mu',logn_MU,'sigma',logn_SIGMA),t1,t2);
+ypdf = truncPD.pdf(t1:t2);
+end
 % cumulative lengths
 for k = 1:Simulations
 DRlengths(:,k) = [round(randsample(t1:t2, 1000, true, ypdf))]';
@@ -66,6 +88,10 @@ DRsemilengths(:,k) = DRlengths(:,k)./2; % used later to keep tips separated
 DRcumsemilengths(:,k) = cumsum(DRsemilengths(:,k),1);
 f_numDR(:,k) = find(DRcumlengths(:,k) >= total_DR_lenght,1,'first'); %to fit total_DR_lenght
 end
+
+
+
+
 %% place rupture along the strike of the fault
 for i = 1 : Simulations
     
@@ -121,7 +147,7 @@ Prob_unif = Rupture_yes_case_unif / Total_cases;
 Prob_cluster = Rupture_yes_case_cluster / Total_cases;
 %%
 Pname = fullfile('TABLE_outputs',[SoF,'_P_montecarlo_SiteDim',num2str(along_strike_dimension),'_SiteDist',num2str(site_distance),'_',char(HWFW),'.txt']);
-Pout = table(Prob_unif,Prob_unif,(Prob_unif+Prob_unif)/2,'VariableNames',{'Punif','Pexp','Pmean'});
+Pout = table(Prob_unif,Prob_cluster,(Prob_unif+Prob_cluster)/2,'VariableNames',{'Punif','Pexp','Pmean'});
 writetable(Pout,Pname);
 %%
 figure(1)
@@ -157,4 +183,3 @@ xlabel('Distance along the strike of the PF (m)')
 ylabel('simulations')
 %%
 saveas(1,fullfile(path2,[SoF,'_simulations_momntecarlo_SiteDim',num2str(along_strike_dimension),'_SiteDist',num2str(site_distance),'_',char(HWFW),'.pdf']),'pdf')
-
