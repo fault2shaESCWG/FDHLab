@@ -1,0 +1,4 @@
+Row,16thPCT,84thPCT
+Hangingwall,7.64933,136.8615
+Footwall,5.68166,130.9825
+all,7.304941,134.3065

@@ -3,21 +3,16 @@ clear all
 pathout1 = 'FIGURE/Logistic';
 mkdir(pathout1)
 %%   user defined inputs
-nameforfigure = 'Normal_m6.7_dist7600_dim100';
+nameforfigure = 'CombC_Normal_m7_dist2000_dim100';
 % calculate logistic for a given combination in "param_logistic"
-m = 6.7;
+m = 7;
 x = 5:10:8000;
 site_dim = 100;
-site_distance = 7600;% meters from the PF
+site_distance = 2000;% meters from the PF
 HWFW = 'HW'; % HW = Hanging wall; FW = Footwall location of the site
 %SoF = 'Reverse';
 SoF = 'Normal';
-param_logistic = load(fullfile('TABLE_outputs',['parameters_logistic_multisizeC1_',char(SoF),'.txt']));
-
-%%
-Pname = fullfile('TABLE_outputs',[SoF,'_P_montecarlo_SiteDim',num2str(site_dim),'_SiteDist',num2str(site_distance),'_',char(HWFW),'.txt']);
-P_montecarlo_table = readtable(Pname)
-P_montecarlo = P_montecarlo_table.Punif;
+param_logistic = load(fullfile('../Regressions/TABLE_outputs',['parameters_logistic_multisizeC3_',char(SoF),'.txt']));
 %%
 i = find(param_logistic(1,:) ==site_dim);
 if strcmp(HWFW,'HW')==1
@@ -27,7 +22,7 @@ y = param_logistic(2,i)+ param_logistic(3,i)*m + param_logistic(4,i).*x + param_
 end  
 P =1-  exp(y)./(1+exp(y));
 %%
-condP = P.* P_montecarlo;
+condP = P.* 1;
 %%
 p1 = find(x >= site_distance, 1,'first');
 p2 = find(x >= (site_distance+site_dim), 1,'first');
@@ -44,7 +39,7 @@ legend(hleg1)
 saveas(1,fullfile(pathout1,[nameforfigure,'.png']),'png');
 %%
 output = table(x',condP','VariableNames',{'distance','Logistic'});
-writetable(output,fullfile('TABLE_outputs',['LOGISTIC_Mw',num2str(m),'_SiteDim',num2str(site_dim),'_SiteDist',num2str(site_distance),'_',char(HWFW),'.txt']))
+writetable(output,fullfile('TABLE_outputs',['LOGISTIC_CombC_Mw',num2str(m),'_SiteDim',num2str(site_dim),'_SiteDist',num2str(site_distance),'_',char(HWFW),'.txt']))
 %%
 
 

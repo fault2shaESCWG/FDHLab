@@ -153,8 +153,8 @@ xlim([-2000 2000])
 ylim([0 1])
 %legend(hleg)
 set(gca,'YScale','log')
-ylabel( 'Ratio' )
-xlabel( 'Distance from the PF (m)' )
+xlabel( 'Ratio' )
+ylabel( 'Distance from the PF (m)' )
 saveas(i_wstep,fullfile(path2,['SoF_',SoF_label{SoF},'_Ratio',num2str(assd),'meters_',date,'.pdf']),'pdf')
 
 end

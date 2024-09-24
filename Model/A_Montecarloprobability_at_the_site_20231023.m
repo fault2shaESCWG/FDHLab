@@ -19,10 +19,10 @@ end
 SL = 1;
 % length of the fault (in meter)
 %Fault_length = 5800;
-Fault_length = 34000;
+Fault_length = 10000;
 %dr_over_tip_distance = 0;%(in meter) >0 to place DR over the tips
 along_strike_dimension = 100; % meters
-site_distance = 7600;% meters from the PF
+site_distance = 500;% meters from the PF
 %SoF = ['Reverse'];
 SoF = ['Normal'];
 HWFW = 'HW'; % HW = Hanging wall; FW = Footwall location of the site
@@ -33,8 +33,8 @@ Simulations_figure = 100;% number of simulations placed in the figure
 %SpaceDRLength = dr_over_tip_distance+Fault_length+dr_over_tip_distance ; % space where DR can occurr
 SpaceDRLength = Fault_length; % space where DR can occurr
 
-R2_lengths_PCTS = readtable(['TABLE_outputs/',SoF,'_R2_histogram_length.txt'],'VariableNamingRule', 'preserve');
-R2_LOGN = readtable(['TABLE_outputs/',SoF,'LOGN_MU_SIGMA.txt'],'VariableNamingRule', 'preserve');
+R2_lengths_PCTS = readtable(['../Regressions/TABLE_outputs/',SoF,'_R2_histogram_length.txt'],'VariableNamingRule', 'preserve');
+R2_LOGN = readtable(['../Regressions/TABLE_outputs/',SoF,'LOGN_MU_SIGMA.txt'],'VariableNamingRule', 'preserve');
 
 if strcmp(HWFW,'HW')==1
         DRlengths_min_max = [round(R2_lengths_PCTS{1,2}),round(R2_lengths_PCTS{1,3})]; % minimum and maximum length of DR to be simulated
@@ -50,9 +50,9 @@ zoom_x = [Site_pos(1)-along_strike_dimension*2 Site_pos(2)+along_strike_dimensio
 %zoom_x = [0 Fault_length];
 % ratio between DRlength and PFlength
 if site_distance > 200
-fraction = load(fullfile('TABLE_outputs',[SoF,'RATIOpcts_farfault',char(HWFW),'sim.txt']))
+fraction = load(fullfile('../Regressions/TABLE_outputs',[SoF,'RATIOpcts_farfault',char(HWFW),'sim.txt']))
 elseif site_distance <= 200
-fraction = load(fullfile('TABLE_outputs',[SoF,'RATIOpcts_nearfault',char(HWFW),'sim.txt']))
+fraction = load(fullfile('../Regressions/TABLE_outputs',[SoF,'RATIOpcts_nearfault',char(HWFW),'sim.txt']))
 end
 
 fcol = find(fraction(1,:)==along_strike_dimension);

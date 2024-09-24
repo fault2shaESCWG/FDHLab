@@ -58,15 +58,38 @@ lme5 = fitlme(T,'ThrowDRLN ~ Mw + distanceLN + ThrowPFmeanLN + HWFW + combinatio
 lme6 = fitlme(T,'ThrowDRLN ~ Mw + distanceLN + ThrowPFmeanLN + HWFW + SoF + combination');
 lme7 = fitlme(T,'ThrowDRLN ~ Mw + distanceLN + ThrowPFmeanLN + HWFW + SoF + combination + (1|IdE)');
 lme8 = fitlme(T,'ThrowDRLN ~ Mw + distanceLN + ThrowPFmeanLN + combination + (1|IdE)');
-lme9 = fitlme(T,'ThrowDRLN ~ Mw +  ThrowPFmeanLN  + (distanceLN:SoF:HWFW)+ combination + (1|IdE)');
 
 %%
 AIC_model  =[];
 AIC_model  = {'lme1',lme1.ModelCriterion.AIC;'lme2',lme2.ModelCriterion.AIC;
     'lme3',lme3.ModelCriterion.AIC;'lme4',lme4.ModelCriterion.AIC;
     'lme5',lme5.ModelCriterion.AIC;'lme6',lme6.ModelCriterion.AIC;
-    'lme7',lme7.ModelCriterion.AIC;'lme8',lme8.ModelCriterion.AIC;
-    'lme9',lme9.ModelCriterion.AIC};
+    'lme7',lme7.ModelCriterion.AIC;'lme8',lme8.ModelCriterion.AIC};
+writecell(AIC_model,'AIC_model.txt');
+LogLikelihood_model  =[];
+LogLikelihood_model  = {'lme1',lme1.ModelCriterion.LogLikelihood;'lme2',lme2.ModelCriterion.LogLikelihood;
+    'lme3',lme3.ModelCriterion.LogLikelihood;'lme4',lme4.ModelCriterion.LogLikelihood;
+    'lme5',lme5.ModelCriterion.LogLikelihood;'lme6',lme6.ModelCriterion.LogLikelihood;
+    'lme7',lme7.ModelCriterion.LogLikelihood;'lme8',lme8.ModelCriterion.LogLikelihood};
+writecell(LogLikelihood_model,'LL_model.txt');
+Deviance_model  =[];
+Deviance_model  = {'lme1',lme1.ModelCriterion.Deviance;'lme2',lme2.ModelCriterion.Deviance;
+    'lme3',lme3.ModelCriterion.Deviance;'lme4',lme4.ModelCriterion.Deviance;
+    'lme5',lme5.ModelCriterion.Deviance;'lme6',lme6.ModelCriterion.Deviance;
+    'lme7',lme7.ModelCriterion.Deviance;'lme8',lme8.ModelCriterion.Deviance};
+writecell(Deviance_model,'Deviance_model.txt');
+BIC_model  =[];
+BIC_model  = {'lme1',lme1.ModelCriterion.BIC;'lme2',lme2.ModelCriterion.BIC;
+    'lme3',lme3.ModelCriterion.BIC;'lme4',lme4.ModelCriterion.BIC;
+    'lme5',lme5.ModelCriterion.BIC;'lme6',lme6.ModelCriterion.BIC;
+    'lme7',lme7.ModelCriterion.BIC;'lme8',lme8.ModelCriterion.BIC};
+writecell(BIC_model,'BIC_model.txt');
+DFE_model  =[];
+DFE_model  = {'lme1',lme1.DFE;'lme2',lme2.DFE;
+    'lme3',lme3.DFE;'lme4',lme4.DFE;
+    'lme5',lme5.DFE;'lme6',lme6.DFE;
+    'lme7',lme7.DFE;'lme8',lme8.DFE};
+writecell(DFE_model,'DFE_model.txt');
 %%
 coeff = table(lme7.Coefficients.Name,lme7.Coefficients.Estimate,lme7.Coefficients.pValue,'VariableNames',{'name','value','p-value'});
 sigma_value = sqrt(lme7.MSE);
