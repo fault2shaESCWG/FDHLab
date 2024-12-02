@@ -3,7 +3,7 @@ clear all
 clc
 %%
 % input_ length of PF and magnitude, position and distance of the site
-Length_PF = 40000; %km 
+Length_PF = 40000; %m 
 magnitude_PF = 7;
 position = 0.5; % this is l/L
 distance = 2; %km
