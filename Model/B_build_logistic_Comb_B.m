@@ -1,6 +1,6 @@
 % calculate logistic 
 clear all
-pathout1 = 'FIGURE/Logistic';
+pathout1 = 'Figure/Logistic';
 mkdir(pathout1)
 %%   user defined inputs
 nameforfigure = 'CombB_Normal_m7_dist500_dim100';

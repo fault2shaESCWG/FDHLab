@@ -6,7 +6,7 @@ close all
 rng('default');
 % output paths 
 path1 = 'TABLE_outputs';
-path2 = fullfile('FIGURE','simulations');
+path2 = fullfile('Figure','simulations');
 if isempty(dir(path1))
 mkdir(path1)
 end
