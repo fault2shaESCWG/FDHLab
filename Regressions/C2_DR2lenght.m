@@ -9,6 +9,10 @@ outputname = 'R2_histogram_length_NoSoF';
 pathin = '../Analyse_SUREvers2_database/TABLE_db_20231026';
 pathin2 = '../Analyse_SUREvers2_database/';
 % output paths
+path1 = fullfile('TABLE_outputs/');
+if isempty(dir(path1))
+mkdir(path1)
+end
 path2 = fullfile('FIGURE','R2DRlenghts/');
 if isempty(dir(path2))
 mkdir(path2)
@@ -91,5 +95,5 @@ ylabel ('pdf')
 
 saveas(1,[path2,SoF_label{SoF},'_R2R1_histogram_length.png'],'png');
 %%
-writetable(R2_histogram_length,[path2,SoF_label{SoF},'_R2R1_histogram_length.txt'],'WriteRowNames',true);
-writetable(LOGN_MU_SIGMA,[path2,SoF_label{SoF},'LOGN_MU_SIGMA.txt'],'WriteRowNames',true);
+writetable(R2_histogram_length,[path1,SoF_label{SoF},'_R2R1_histogram_length.txt'],'WriteRowNames',true);
+writetable(LOGN_MU_SIGMA,[path1,SoF_label{SoF},'LOGN_MU_SIGMA.txt'],'WriteRowNames',true);
