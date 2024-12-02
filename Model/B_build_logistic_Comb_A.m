@@ -12,6 +12,7 @@ site_distance = 2000;% meters from the PF
 HWFW = 'HW'; % HW = Hanging wall; FW = Footwall location of the site
 %SoF = 'Reverse';
 SoF = 'Normal';
+nameforfigure = char("CombA_"+SoF+"_m"+m+"_dist"+site_distance+"_dim"+site_dim);
 param_logistic = load(fullfile('../Regressions/TABLE_outputs',['parameters_logistic_multisizeC1_',char(SoF),'.txt']));
 
 %%
